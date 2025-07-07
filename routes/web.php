@@ -3,10 +3,15 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\ApiController;
+
+
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/api/user-info', [ApiController::class, 'userInfo']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
