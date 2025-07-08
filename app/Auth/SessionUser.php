@@ -4,7 +4,7 @@ namespace App\Auth;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class SessionUser implements Authenticatable
+class SessionUser implements Authenticicatable
 {
     protected $attributes;
 
@@ -30,7 +30,7 @@ class SessionUser implements Authenticatable
 
     public function getAuthPasswordName()
     {
-        return 'password'; // dummy, required by interface
+        return 'password'; // dummy
     }
 
     public function getRememberToken()
@@ -40,7 +40,7 @@ class SessionUser implements Authenticatable
 
     public function setRememberToken($value)
     {
-        //
+        // not needed
     }
 
     public function getRememberTokenName()
@@ -53,7 +53,7 @@ class SessionUser implements Authenticatable
         return $this->attributes[$key] ?? null;
     }
 
-    public function __toArray()
+    public function toArray()
     {
         return $this->attributes;
     }
