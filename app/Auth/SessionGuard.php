@@ -24,7 +24,7 @@ class SessionGuard implements Guard
         \Log::info('SessionGuard called on test', [
             'session' => session()->all(),
         ]);
-        
+
         if ($this->user) {
             return $this->user;
         }
@@ -55,5 +55,11 @@ class SessionGuard implements Guard
     public function hasUser()
     {
         return !is_null($this->user);
+    }
+
+    public function logout()
+    {
+        session()->forget('user');
+        $this->user = null;
     }
 }
