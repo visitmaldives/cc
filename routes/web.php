@@ -8,7 +8,7 @@ use App\Http\Controllers\ApiController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/api/user-info', [ApiController::class, 'userInfo']);

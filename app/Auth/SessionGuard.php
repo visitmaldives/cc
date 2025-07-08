@@ -21,9 +21,9 @@ class SessionGuard implements Guard
 
     public function user()
     {
-        \Log::info('SessionGuard called on test', [
-            'session' => session()->all(),
-        ]);
+        // \Log::info('SessionGuard called on test', [
+        //     'session' => session()->all(),
+        // ]);
 
         if ($this->user) {
             return $this->user;
