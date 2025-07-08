@@ -27,3 +27,11 @@ require __DIR__.'/auth.php';
 
 Route::get('/auth/google/redirect', [SocialiteController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('google.callback');
+
+Route::get('/debug-session', function () {
+    return [
+        'session_id' => session()->getId(),
+        'full_session' => session()->all(),
+        'auth_user' => auth()->user(),
+    ];
+});
