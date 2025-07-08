@@ -7,8 +7,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
-use Auth;
-
 class SocialiteController extends Controller
 {
     public function redirect()
