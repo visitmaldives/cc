@@ -4,7 +4,7 @@ namespace App\Auth;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class SessionUser implements Authenticicatable
+class SessionUser implements Authenticatable
 {
     protected $attributes;
 
