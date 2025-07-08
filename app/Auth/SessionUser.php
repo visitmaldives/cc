@@ -25,7 +25,12 @@ class SessionUser implements Authenticatable
 
     public function getAuthPassword()
     {
-        return null;
+        return null; // not used
+    }
+
+    public function getAuthPasswordName()
+    {
+        return 'password'; // dummy, required by interface
     }
 
     public function getRememberToken()
@@ -35,12 +40,12 @@ class SessionUser implements Authenticatable
 
     public function setRememberToken($value)
     {
-        // not used
+        //
     }
 
     public function getRememberTokenName()
     {
-        return null;
+        return 'remember_token';
     }
 
     public function __get($key)
@@ -48,7 +53,7 @@ class SessionUser implements Authenticatable
         return $this->attributes[$key] ?? null;
     }
 
-    public function toArray()
+    public function __toArray()
     {
         return $this->attributes;
     }
