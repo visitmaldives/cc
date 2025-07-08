@@ -36,4 +36,20 @@ class SocialiteController extends Controller
 
         return redirect('/dashboard');
     }
+
+
+    protected function groupUserRolesAndPermissions($user)
+    {
+        $apps = []; // structure: app_id => ['roles' => [...], 'permissions' => [...]]
+
+        foreach ($user->roles as $role) {
+            $apps[$role->pivot->app_id]['roles'][] = $role->name;
+        }
+
+        foreach ($user->getAllPermissions() as $permission) {
+            $apps[$permission->pivot->app_id]['permissions'][] = $permission->name;
+        }
+
+        return $apps;
+    }
 }
