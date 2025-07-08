@@ -7,7 +7,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class GeneralApiController extends Controller
+class ApiController extends Controller
 {
     public function userInfo()
     {
