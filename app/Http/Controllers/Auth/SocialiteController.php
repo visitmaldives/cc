@@ -29,7 +29,7 @@ class SocialiteController extends Controller
         Auth::login($user);
 
         session([
-            'user' => (Auth::user()),
+            'user' => (Auth::user()->toArray()),
             'apps' => $this->groupUserRolesAndPermissions($user),
             'session_id' => session()->getId(),
         ]);
