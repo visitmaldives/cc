@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
-use App\Http\Resources\UserResource;
+
+use Auth;
 
 class SocialiteController extends Controller
 {
@@ -30,7 +31,7 @@ class SocialiteController extends Controller
         Auth::login($user);
 
         session([
-            'user' => new UserResource($user),
+            'user' => (Auth::user()),
             'apps' => $this->groupUserRolesAndPermissions($user),
             'session_id' => session()->getId(),
         ]);
