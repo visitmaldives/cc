@@ -47,4 +47,9 @@ class SessionGuard implements Guard
         $this->user = $user;
         return $this;
     }
+
+    public function hasUser()
+    {
+        return !is_null($this->user);
+    }
 }
