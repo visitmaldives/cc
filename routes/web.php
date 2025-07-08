@@ -29,10 +29,16 @@ Route::get('/auth/google/redirect', [SocialiteController::class, 'redirect'])->n
 Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('google.callback');
 
 Route::get('/debug-session', function () {
+    $defaultGuardName = config('auth.defaults.guard');
+    $currentGuard = app('auth')->guard();
+    $guardConfig = config("auth.guards.{$defaultGuardName}");
+
     return [
-        'default_guard' => config('auth.defaults.guard'),
-        'current_guard_driver' => app('auth')->guard()->getName(), // returns "web"
-        'guard_instance' => get_class(app('auth')->guard()),
+        'default_guard' => $defaultGuardName,
+        'default_guard_config' => $guardConfig,
+        'guard_instance_class' => get_class($currentGuard),
+        'session_id' => session()->getId(),
+        'session' => session()->all(),
         'user' => auth()->user(),
     ];
 });
