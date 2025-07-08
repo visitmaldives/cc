@@ -30,8 +30,9 @@ Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->n
 
 Route::get('/debug-session', function () {
     return [
-        'session_id' => session()->getId(),
-        'full_session' => session()->all(),
-        'auth_user' => auth()->user(),
+        'default_guard' => config('auth.defaults.guard'),
+        'current_guard_driver' => app('auth')->guard()->getName(), // returns "web"
+        'guard_instance' => get_class(app('auth')->guard()),
+        'user' => auth()->user(),
     ];
 });
