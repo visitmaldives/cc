@@ -1,11 +1,4 @@
 <x-guest-layout>
-    @php
-    dd([
-        'session_id' => session()->getId(),
-        'session' => session()->all(),
-        'auth_user' => Auth::user(),
-    ]);
-    @endphp
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
