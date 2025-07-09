@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Role;
+use App\Models\App;
+
+
 
 class ApiController extends Controller
 {
@@ -19,10 +22,16 @@ class ApiController extends Controller
             ], 401);
         }
 
+        $apps = $this->groupUserRolesAndPermissions($user);
+
+        $user->setRelation('roles', collect());
+        $user->setRelation('permissions', collect());
+
         return response()->json([
-            'user' => new UserResource($user),
-            'apps' => $this->groupUserRolesAndPermissions($user),
+            'user' => $user,
+            'apps' => $apps,
             'session_id' => session()->getId(),
+            'DATA' => session()->all()
         ]);
     }
 
@@ -30,28 +39,33 @@ class ApiController extends Controller
     {
         $apps = [];
 
-        // Group roles by app prefix
-        foreach ($user->getRoleNames() as $role) {
-            if (preg_match('/^(.*)_(.*)$/', $role, $matches)) {
-                [$full, $app, $roleName] = $matches;
-                $apps[$app]['roles'][] = $roleName;
+        $user->load('roles.permissions');
+
+        foreach ($user->roles as $role) {
+            $appId = $role->app_id;
+
+            if (!isset($apps[$appId])) {
+                $apps[$appId] = [
+                    'name' => App::find($appId)->slug,
+                    'roles' => [],
+                    'permissions' => [],
+                ];
+            }
+
+            $apps[$appId]['roles'][] = $role->name;
+
+            foreach ($role->permissions as $permission) {
+                $apps[$appId]['permissions'][] = $permission->name;
             }
         }
 
-        // Group permissions by app prefix
-        foreach ($user->getAllPermissions() as $permission) {
-            if (preg_match('/^(.*)_(.*)$/', $permission->name, $matches)) {
-                [$full, $app, $permName] = $matches;
-                $apps[$app]['permissions'][] = $permName;
-            }
-        }
-
-        // Deduplicate
         foreach ($apps as &$appData) {
-            $appData['roles'] = array_values(array_unique($appData['roles'] ?? []));
-            $appData['permissions'] = array_values(array_unique($appData['permissions'] ?? []));
+            $appData['roles'] = array_values(array_unique($appData['roles']));
+            $appData['permissions'] = array_values(array_unique($appData['permissions']));
         }
+        unset($appData);
 
         return $apps;
     }
+
 }

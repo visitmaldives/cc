@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use App\Models\App;
 
 class SocialiteController extends Controller
 {
@@ -28,28 +29,59 @@ class SocialiteController extends Controller
 
         Auth::login($user);
 
+        $apps = $this->groupUserRolesAndPermissions($user);
+
+        $user->setRelation('roles', collect());
+        $user->setRelation('permissions', collect());
+
         session([
-            'user' => (Auth::user()->toArray()),
-            'apps' => $this->groupUserRolesAndPermissions($user),
-            'session_id' => session()->getId(),
+            'user' => $user,
+            'apps' => $apps,
+            'session_id' => session()->getId()
         ]);
+
+        $redirectUrl = session()->pull('redirect_url');
+
+        if ($redirectUrl && filter_var($redirectUrl, FILTER_VALIDATE_URL)) {
+            return redirect()->away($redirectUrl);
+        }
 
         return redirect('/dashboard');
     }
 
 
-    protected function groupUserRolesAndPermissions($user)
+    private function groupUserRolesAndPermissions($user)
     {
-        $apps = []; // structure: app_id => ['roles' => [...], 'permissions' => [...]]
+        $apps = [];
+
+        $user->load('roles.permissions');
 
         foreach ($user->roles as $role) {
-            $apps[$role->pivot->app_id]['roles'][] = $role->name;
+            $appId = $role->app_id;
+
+            if (!isset($apps[$appId])) {
+                $apps[$appId] = [
+                    'name' => App::find($appId)->slug,
+                    'roles' => [],
+                    'permissions' => [],
+                ];
+            }
+
+            $apps[$appId]['roles'][] = $role->name;
+
+            foreach ($role->permissions as $permission) {
+                $apps[$appId]['permissions'][] = $permission->name;
+            }
         }
 
-        foreach ($user->getAllPermissions() as $permission) {
-            $apps[$permission->pivot->app_id]['permissions'][] = $permission->name;
+        foreach ($apps as &$appData) {
+            $appData['roles'] = array_values(array_unique($appData['roles']));
+            $appData['permissions'] = array_values(array_unique($appData['permissions']));
         }
+        unset($appData);
 
         return $apps;
     }
+
+
 }
