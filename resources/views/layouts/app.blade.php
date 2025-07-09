@@ -13,24 +13,35 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Styles -->
+        @livewireStyles
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+        <x-banner />
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+        <div class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url({{ url('/') }}/assets/img/bg.png); background-color: #000;">
+            <div class="bg-black/30 min-h-screen">
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                <!-- Page Heading -->
+                @if (isset($header))
+                    <header class="bg-white shadow">
+                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                            {{ $header }}
+                        </div>
+                    </header>
+                @endif
+
+                <!-- Page Content -->
+                <main>
+                    {{ $slot }}
+                </main>
+            </div>
+            <img class="fixed bottom-5 left-5 w-32 opacity-50" src="{{ url('/') }}/assets/img/dash-logo.png">
         </div>
+
+        @stack('modals')
+
+        @livewireScripts
     </body>
 </html>
