@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/auth/google/redirect', [SocialiteController::class, 'redirect'])->name('google.redirect');
+Route::get('/auth/google/redirect/{url?}', [SocialiteController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('google.callback');
 
 // Route::get('/debug-session', function () {

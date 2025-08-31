@@ -31,7 +31,7 @@ class ApiController extends Controller
             'user' => $user,
             'apps' => $apps,
             'session_id' => session()->getId(),
-            'DATA' => session()->all()
+            // 'DATA' => session()->all()
         ]);
     }
 

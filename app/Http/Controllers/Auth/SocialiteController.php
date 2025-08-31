@@ -10,8 +10,13 @@ use App\Models\App;
 
 class SocialiteController extends Controller
 {
-    public function redirect()
+    public function redirect($url = null)
     {
+
+        if ($url) {
+            session(['redirect_url' => $url]);
+        }
+
         return Socialite::driver('google')->redirect();
     }
 
@@ -41,6 +46,10 @@ class SocialiteController extends Controller
         ]);
 
         $redirectUrl = session()->pull('redirect_url');
+
+        if ($redirectUrl && !preg_match('~^https?://~i', $redirectUrl)) {
+            $redirectUrl = 'https://' . $redirectUrl;
+        }
 
         if ($redirectUrl && filter_var($redirectUrl, FILTER_VALIDATE_URL)) {
             return redirect()->away($redirectUrl);
