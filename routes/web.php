@@ -14,6 +14,10 @@ Route::get('/', function () {
 
 Route::get('/api/user-info', [ApiController::class, 'userInfo']);
 
+Route::prefix('api')->middleware(['check.api.token'])->group(function () {
+    Route::get('/user-info/{id}', [ApiController::class, 'getUserInfo']);
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

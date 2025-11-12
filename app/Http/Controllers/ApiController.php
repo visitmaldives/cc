@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
 use App\Models\App;
-
-
+use App\Models\User;
 
 class ApiController extends Controller
 {
@@ -32,6 +31,27 @@ class ApiController extends Controller
             'apps' => $apps,
             'session_id' => session()->getId(),
             // 'DATA' => session()->all()
+        ]);
+    }
+
+    public function getUserInfo($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'error' => 'Not authenticated',
+            ], 401);
+        }
+
+        $apps = $this->groupUserRolesAndPermissions($user);
+
+        $user->setRelation('roles', collect());
+        $user->setRelation('permissions', collect());
+
+        return response()->json([
+            'user' => $user,
+            'apps' => $apps
         ]);
     }
 
